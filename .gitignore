@@ -1,1 +1,14 @@
 .DS_Store
+build/
+build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CTestTestfile.cmake
+Testing/
+*.a
+*.lib
+*.o
+*.obj
+*.pdb
+*.ilk

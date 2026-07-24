@@ -347,6 +347,7 @@ int lua_type(lua_State* L, int idx)
 const char* lua_typename(lua_State* L, int t)
 {
     api_check(L, t >= LUA_TNONE && t < LUA_T_COUNT);
+    (void)L;
 
     return (t == LUA_TNONE) ? "no value" : luaT_typenames[t];
 }
@@ -1387,7 +1388,7 @@ int lua_gc(lua_State* L, int what, int data)
 ** miscellaneous functions
 */
 
-l_noret lua_error(lua_State* L)
+LUA_NORETURN void lua_error(lua_State* L)
 {
     api_checknelems(L, 1);
 
@@ -1861,7 +1862,10 @@ void lua_registeruserdatadirectfieldget(lua_State* L, int tag, const char* field
     luaS_fix(ts);
 
     tvalue_t* slot = luaH_setstr(L, g->udatadirectfields[tag], ts);
-    setpvalue(slot, ((void*)(fn)), 0);
+    udata_t* callback = luaU_newudata(L, sizeof(fn), UTAG_PROXY);
+    memcpy(callback->data, &fn, sizeof(fn));
+    setuvalue(L, slot, callback);
+    luaC_objbarrier(L, g->udatadirectfields[tag], callback);
 }
 
 void lua_userdatadirectfield_setnumber(void* result, double n)

@@ -72,8 +72,20 @@ static int __luauc_count_trailing_zero_u64(uint64_t value)
 // Because of this, and the fact that "extra" returned values will be ignored, implementations below typically check that nresults is <= expected
 // number, which covers the LUA_MULTRET case.
 
+#define LUAUC_FASTCALL_USE_PARAMETERS() \
+    do \
+    { \
+        (void)L; \
+        (void)res; \
+        (void)arg0; \
+        (void)nresults; \
+        (void)args; \
+        (void)nparams; \
+    } while (0)
+
 static int __luauF_assert(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults == 0 && !l_isfalse(arg0))
     {
         return 0;
@@ -84,6 +96,7 @@ static int __luauF_assert(lua_State* L, StkId res, tvalue_t* arg0, int nresults,
 
 static int __luauF_abs(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double a1 = nvalue(arg0);
@@ -96,6 +109,7 @@ static int __luauF_abs(lua_State* L, StkId res, tvalue_t* arg0, int nresults, St
 
 static int __luauF_acos(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double a1 = nvalue(arg0);
@@ -108,6 +122,7 @@ static int __luauF_acos(lua_State* L, StkId res, tvalue_t* arg0, int nresults, S
 
 static int __luauF_asin(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double a1 = nvalue(arg0);
@@ -120,6 +135,7 @@ static int __luauF_asin(lua_State* L, StkId res, tvalue_t* arg0, int nresults, S
 
 static int __luauF_atan2(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisnumber(arg0) && ttisnumber(args))
     {
         double a1 = nvalue(arg0);
@@ -133,6 +149,7 @@ static int __luauF_atan2(lua_State* L, StkId res, tvalue_t* arg0, int nresults, 
 
 static int __luauF_atan(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double a1 = nvalue(arg0);
@@ -146,6 +163,7 @@ static int __luauF_atan(lua_State* L, StkId res, tvalue_t* arg0, int nresults, S
 LUAU_FASTMATH_BEGIN
 static int __luauF_ceil(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double a1 = nvalue(arg0);
@@ -159,6 +177,7 @@ LUAU_FASTMATH_END
 
 static int __luauF_cosh(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double a1 = nvalue(arg0);
@@ -171,6 +190,7 @@ static int __luauF_cosh(lua_State* L, StkId res, tvalue_t* arg0, int nresults, S
 
 static int __luauF_cos(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double a1 = nvalue(arg0);
@@ -183,6 +203,7 @@ static int __luauF_cos(lua_State* L, StkId res, tvalue_t* arg0, int nresults, St
 
 static int __luauF_deg(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double a1 = nvalue(arg0);
@@ -196,6 +217,7 @@ static int __luauF_deg(lua_State* L, StkId res, tvalue_t* arg0, int nresults, St
 
 static int __luauF_exp(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double a1 = nvalue(arg0);
@@ -209,6 +231,7 @@ static int __luauF_exp(lua_State* L, StkId res, tvalue_t* arg0, int nresults, St
 LUAU_FASTMATH_BEGIN
 static int __luauF_floor(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double a1 = nvalue(arg0);
@@ -222,6 +245,7 @@ LUAU_FASTMATH_END
 
 static int __luauF_fmod(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisnumber(arg0) && ttisnumber(args))
     {
         double a1 = nvalue(arg0);
@@ -235,6 +259,7 @@ static int __luauF_fmod(lua_State* L, StkId res, tvalue_t* arg0, int nresults, S
 
 static int __luauF_frexp(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 2 && ttisnumber(arg0))
     {
         double a1 = nvalue(arg0);
@@ -250,6 +275,7 @@ static int __luauF_frexp(lua_State* L, StkId res, tvalue_t* arg0, int nresults, 
 
 static int __luauF_ldexp(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisnumber(arg0) && ttisnumber(args))
     {
         double a1 = nvalue(arg0);
@@ -265,6 +291,7 @@ static int __luauF_ldexp(lua_State* L, StkId res, tvalue_t* arg0, int nresults, 
 
 static int __luauF_log10(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double a1 = nvalue(arg0);
@@ -277,6 +304,7 @@ static int __luauF_log10(lua_State* L, StkId res, tvalue_t* arg0, int nresults, 
 
 static int __luauF_log(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double a1 = nvalue(arg0);
@@ -313,6 +341,7 @@ static int __luauF_log(lua_State* L, StkId res, tvalue_t* arg0, int nresults, St
 
 static int __luauF_max(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisnumber(arg0) && ttisnumber(args))
     {
         double a1 = nvalue(arg0);
@@ -339,6 +368,7 @@ static int __luauF_max(lua_State* L, StkId res, tvalue_t* arg0, int nresults, St
 
 static int __luauF_min(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisnumber(arg0) && ttisnumber(args))
     {
         double a1 = nvalue(arg0);
@@ -365,6 +395,7 @@ static int __luauF_min(lua_State* L, StkId res, tvalue_t* arg0, int nresults, St
 
 static int __luauF_modf(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 2 && ttisnumber(arg0))
     {
         double a1 = nvalue(arg0);
@@ -380,6 +411,7 @@ static int __luauF_modf(lua_State* L, StkId res, tvalue_t* arg0, int nresults, S
 
 static int __luauF_pow(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisnumber(arg0) && ttisnumber(args))
     {
         double a1 = nvalue(arg0);
@@ -393,6 +425,7 @@ static int __luauF_pow(lua_State* L, StkId res, tvalue_t* arg0, int nresults, St
 
 static int __luauF_rad(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double a1 = nvalue(arg0);
@@ -406,6 +439,7 @@ static int __luauF_rad(lua_State* L, StkId res, tvalue_t* arg0, int nresults, St
 
 static int __luauF_sinh(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double a1 = nvalue(arg0);
@@ -418,6 +452,7 @@ static int __luauF_sinh(lua_State* L, StkId res, tvalue_t* arg0, int nresults, S
 
 static int __luauF_sin(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double a1 = nvalue(arg0);
@@ -431,6 +466,7 @@ static int __luauF_sin(lua_State* L, StkId res, tvalue_t* arg0, int nresults, St
 LUAU_FASTMATH_BEGIN
 static int __luauF_sqrt(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double a1 = nvalue(arg0);
@@ -444,6 +480,7 @@ LUAU_FASTMATH_END
 
 static int __luauF_tanh(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double a1 = nvalue(arg0);
@@ -456,6 +493,7 @@ static int __luauF_tanh(lua_State* L, StkId res, tvalue_t* arg0, int nresults, S
 
 static int __luauF_tan(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double a1 = nvalue(arg0);
@@ -468,6 +506,7 @@ static int __luauF_tan(lua_State* L, StkId res, tvalue_t* arg0, int nresults, St
 
 static int __luauF_arshift(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisnumber(arg0) && ttisnumber(args))
     {
         double a1 = nvalue(arg0);
@@ -496,6 +535,7 @@ static int __luauF_arshift(lua_State* L, StkId res, tvalue_t* arg0, int nresults
 
 static int __luauF_band(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisnumber(arg0) && ttisnumber(args))
     {
         double a1 = nvalue(arg0);
@@ -528,6 +568,7 @@ static int __luauF_band(lua_State* L, StkId res, tvalue_t* arg0, int nresults, S
 
 static int __luauF_bnot(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double a1 = nvalue(arg0);
@@ -545,6 +586,7 @@ static int __luauF_bnot(lua_State* L, StkId res, tvalue_t* arg0, int nresults, S
 
 static int __luauF_bor(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisnumber(arg0) && ttisnumber(args))
     {
         double a1 = nvalue(arg0);
@@ -577,6 +619,7 @@ static int __luauF_bor(lua_State* L, StkId res, tvalue_t* arg0, int nresults, St
 
 static int __luauF_bxor(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisnumber(arg0) && ttisnumber(args))
     {
         double a1 = nvalue(arg0);
@@ -609,6 +652,7 @@ static int __luauF_bxor(lua_State* L, StkId res, tvalue_t* arg0, int nresults, S
 
 static int __luauF_btest(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisnumber(arg0) && ttisnumber(args))
     {
         double a1 = nvalue(arg0);
@@ -641,6 +685,7 @@ static int __luauF_btest(lua_State* L, StkId res, tvalue_t* arg0, int nresults, 
 
 static int __luauF_extract(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisnumber(arg0) && ttisnumber(args))
     {
         double a1 = nvalue(arg0);
@@ -684,6 +729,7 @@ static int __luauF_extract(lua_State* L, StkId res, tvalue_t* arg0, int nresults
 
 static int __luauF_lrotate(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisnumber(arg0) && ttisnumber(args))
     {
         double a1 = nvalue(arg0);
@@ -706,6 +752,7 @@ static int __luauF_lrotate(lua_State* L, StkId res, tvalue_t* arg0, int nresults
 
 static int __luauF_lshift(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisnumber(arg0) && ttisnumber(args))
     {
         double a1 = nvalue(arg0);
@@ -732,6 +779,7 @@ static int __luauF_lshift(lua_State* L, StkId res, tvalue_t* arg0, int nresults,
 
 static int __luauF_replace(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 3 && nresults <= 1 && ttisnumber(arg0) && ttisnumber(args) && ttisnumber(args + 1))
     {
         double a1 = nvalue(arg0);
@@ -777,6 +825,7 @@ static int __luauF_replace(lua_State* L, StkId res, tvalue_t* arg0, int nresults
 
 static int __luauF_rrotate(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisnumber(arg0) && ttisnumber(args))
     {
         double a1 = nvalue(arg0);
@@ -799,6 +848,7 @@ static int __luauF_rrotate(lua_State* L, StkId res, tvalue_t* arg0, int nresults
 
 static int __luauF_rshift(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisnumber(arg0) && ttisnumber(args))
     {
         double a1 = nvalue(arg0);
@@ -825,6 +875,7 @@ static int __luauF_rshift(lua_State* L, StkId res, tvalue_t* arg0, int nresults,
 
 static int __luauF_type(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1)
     {
         int tt = ttype(arg0);
@@ -839,6 +890,7 @@ static int __luauF_type(lua_State* L, StkId res, tvalue_t* arg0, int nresults, S
 
 static int __luauF_byte(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && ttisstring(arg0) && ttisnumber(args))
     {
         tstring_t* ts = tsvalue(arg0);
@@ -879,6 +931,7 @@ static int __luauF_byte(lua_State* L, StkId res, tvalue_t* arg0, int nresults, S
 
 static int __luauF_char(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     char buffer[8];
 
     if (nparams < (int)(sizeof(buffer)) && nresults <= 1)
@@ -897,7 +950,7 @@ static int __luauF_char(lua_State* L, StkId res, tvalue_t* arg0, int nresults, S
             if ((unsigned char)(ch) != ch)
                 return -1;
 
-            buffer[0] = ch;
+            buffer[0] = (char)ch;
         }
 
         for (int i = 2; i <= nparams; ++i)
@@ -911,7 +964,7 @@ static int __luauF_char(lua_State* L, StkId res, tvalue_t* arg0, int nresults, S
             if ((unsigned char)(ch) != ch)
                 return -1;
 
-            buffer[i - 1] = ch;
+            buffer[i - 1] = (char)ch;
         }
 
         buffer[nparams] = 0;
@@ -925,6 +978,7 @@ static int __luauF_char(lua_State* L, StkId res, tvalue_t* arg0, int nresults, S
 
 static int __luauF_len(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisstring(arg0))
     {
         tstring_t* ts = tsvalue(arg0);
@@ -938,6 +992,7 @@ static int __luauF_len(lua_State* L, StkId res, tvalue_t* arg0, int nresults, St
 
 static int __luauF_typeof(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1)
     {
         const tstring_t* ttname = luaT_objtypenamestr(L, arg0);
@@ -951,6 +1006,7 @@ static int __luauF_typeof(lua_State* L, StkId res, tvalue_t* arg0, int nresults,
 
 static int __luauF_sub(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 3 && nresults <= 1 && ttisstring(arg0) && ttisnumber(args) && ttisnumber(args + 1))
     {
         tstring_t* ts = tsvalue(arg0);
@@ -974,6 +1030,7 @@ static int __luauF_sub(lua_State* L, StkId res, tvalue_t* arg0, int nresults, St
 
 static int __luauF_clamp(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 3 && nresults <= 1 && ttisnumber(arg0) && ttisnumber(args) && ttisnumber(args + 1))
     {
         double v = nvalue(arg0);
@@ -995,6 +1052,7 @@ static int __luauF_clamp(lua_State* L, StkId res, tvalue_t* arg0, int nresults, 
 
 static int __luauF_sign(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double v = nvalue(arg0);
@@ -1008,6 +1066,7 @@ static int __luauF_sign(lua_State* L, StkId res, tvalue_t* arg0, int nresults, S
 LUAU_FASTMATH_BEGIN
 static int __luauF_round(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double v = nvalue(arg0);
@@ -1021,6 +1080,7 @@ LUAU_FASTMATH_END
 
 static int __luauF_rawequal(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1)
     {
         setbvalue(res, luaO_rawequalObj(arg0, args));
@@ -1032,6 +1092,7 @@ static int __luauF_rawequal(lua_State* L, StkId res, tvalue_t* arg0, int nresult
 
 static int __luauF_rawget(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttistable(arg0))
     {
         setobj2s(L, res, luaH_get(hvalue(arg0), args));
@@ -1043,6 +1104,7 @@ static int __luauF_rawget(lua_State* L, StkId res, tvalue_t* arg0, int nresults,
 
 static int __luauF_rawset(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 3 && nresults <= 1 && ttistable(arg0))
     {
         const tvalue_t* key = args;
@@ -1068,6 +1130,7 @@ static int __luauF_rawset(lua_State* L, StkId res, tvalue_t* arg0, int nresults,
 
 static int __luauF_tinsert(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams == 2 && nresults <= 0 && ttistable(arg0))
     {
         lua_table_t* t = hvalue(arg0);
@@ -1085,6 +1148,7 @@ static int __luauF_tinsert(lua_State* L, StkId res, tvalue_t* arg0, int nresults
 
 static int __luauF_tunpack(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults < 0 && ttistable(arg0))
     {
         lua_table_t* t = hvalue(arg0);
@@ -1110,6 +1174,7 @@ static int __luauF_tunpack(lua_State* L, StkId res, tvalue_t* arg0, int nresults
 
 static int __luauF_vector(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisnumber(arg0) && ttisnumber(args))
     {
         float x = (float)nvalue(arg0);
@@ -1144,6 +1209,7 @@ static int __luauF_vector(lua_State* L, StkId res, tvalue_t* arg0, int nresults,
 
 static int __luauF_countlz(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double a1 = nvalue(arg0);
@@ -1162,6 +1228,7 @@ static int __luauF_countlz(lua_State* L, StkId res, tvalue_t* arg0, int nresults
 
 static int __luauF_countrz(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double a1 = nvalue(arg0);
@@ -1180,6 +1247,7 @@ static int __luauF_countrz(lua_State* L, StkId res, tvalue_t* arg0, int nresults
 
 static int __luauF_select(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams == 1 && nresults == 1)
     {
         int n = cast_int(L->base - L->ci->func) - (FFlag_LuauCIProto ? L->ci->p : clvalue(L->ci->func)->l.p)->numparams - 1;
@@ -1209,6 +1277,7 @@ static int __luauF_select(lua_State* L, StkId res, tvalue_t* arg0, int nresults,
 
 static int __luauF_rawlen(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1)
     {
         if (ttistable(arg0))
@@ -1230,6 +1299,7 @@ static int __luauF_rawlen(lua_State* L, StkId res, tvalue_t* arg0, int nresults,
 
 static int __luauF_extractk(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     // args is known to contain a number constant with packed in-range f/w
     if (nparams >= 2 && nresults <= 1 && ttisnumber(arg0))
     {
@@ -1256,6 +1326,7 @@ static int __luauF_extractk(lua_State* L, StkId res, tvalue_t* arg0, int nresult
 
 static int __luauF_getmetatable(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1)
     {
         lua_table_t* mt = NULL;
@@ -1290,6 +1361,7 @@ static int __luauF_getmetatable(lua_State* L, StkId res, tvalue_t* arg0, int nre
 
 static int __luauF_setmetatable(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     // note: setmetatable(_, nil) is rare so we use fallback for it to optimize the fast path
     if (nparams >= 2 && nresults <= 1 && ttistable(arg0) && ttistable(args))
     {
@@ -1310,6 +1382,7 @@ static int __luauF_setmetatable(lua_State* L, StkId res, tvalue_t* arg0, int nre
 
 static int __luauF_tonumber(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams == 1 && nresults <= 1)
     {
         double num;
@@ -1336,6 +1409,7 @@ static int __luauF_tonumber(lua_State* L, StkId res, tvalue_t* arg0, int nresult
 
 static int __luauF_tostring(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1)
     {
         switch (ttype(arg0))
@@ -1387,6 +1461,7 @@ static int __luauF_tostring(lua_State* L, StkId res, tvalue_t* arg0, int nresult
 
 static int __luauF_byteswap(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double a1 = nvalue(arg0);
@@ -1510,6 +1585,7 @@ LUAUC_DEFINE_READ_FP(f64, double)
 #else
 static int __luauF_readfp_f32(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     (void)L;
     (void)res;
     (void)arg0;
@@ -1520,6 +1596,7 @@ static int __luauF_readfp_f32(lua_State* L, StkId res, tvalue_t* arg0, int nresu
 }
 static int __luauF_readfp_f64(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     return __luauF_readfp_f32(L, res, arg0, nresults, args, nparams);
 }
 #endif
@@ -1562,6 +1639,7 @@ LUAUC_DEFINE_WRITE_FP(f64, double)
 
 static int __luauF_vectormagnitude(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisvector(arg0))
     {
         const float* v = vvalue(arg0);
@@ -1580,6 +1658,7 @@ static int __luauF_vectormagnitude(lua_State* L, StkId res, tvalue_t* arg0, int 
 
 static int __luauF_vectornormalize(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisvector(arg0))
     {
         const float* v = vvalue(arg0);
@@ -1602,6 +1681,7 @@ static int __luauF_vectornormalize(lua_State* L, StkId res, tvalue_t* arg0, int 
 
 static int __luauF_vectorcross(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisvector(arg0) && ttisvector(args))
     {
         const float* a = vvalue(arg0);
@@ -1617,6 +1697,7 @@ static int __luauF_vectorcross(lua_State* L, StkId res, tvalue_t* arg0, int nres
 
 static int __luauF_vectordot(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisvector(arg0) && ttisvector(args))
     {
         const float* a = vvalue(arg0);
@@ -1636,6 +1717,7 @@ static int __luauF_vectordot(lua_State* L, StkId res, tvalue_t* arg0, int nresul
 
 static int __luauF_vectorfloor(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisvector(arg0))
     {
         const float* v = vvalue(arg0);
@@ -1654,6 +1736,7 @@ static int __luauF_vectorfloor(lua_State* L, StkId res, tvalue_t* arg0, int nres
 
 static int __luauF_vectorceil(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisvector(arg0))
     {
         const float* v = vvalue(arg0);
@@ -1672,6 +1755,7 @@ static int __luauF_vectorceil(lua_State* L, StkId res, tvalue_t* arg0, int nresu
 
 static int __luauF_vectorabs(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisvector(arg0))
     {
         const float* v = vvalue(arg0);
@@ -1690,6 +1774,7 @@ static int __luauF_vectorabs(lua_State* L, StkId res, tvalue_t* arg0, int nresul
 
 static int __luauF_vectorsign(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisvector(arg0))
     {
         const float* v = vvalue(arg0);
@@ -1708,6 +1793,7 @@ static int __luauF_vectorsign(lua_State* L, StkId res, tvalue_t* arg0, int nresu
 
 static int __luauF_vectorclamp(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 3 && nresults <= 1 && ttisvector(arg0) && ttisvector(args) && ttisvector(args + 1))
     {
         const float* v = vvalue(arg0);
@@ -1737,6 +1823,7 @@ static int __luauF_vectorclamp(lua_State* L, StkId res, tvalue_t* arg0, int nres
 
 static int __luauF_vectormin(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisvector(arg0) && ttisvector(args))
     {
         const float* a = vvalue(arg0);
@@ -1778,6 +1865,7 @@ static int __luauF_vectormin(lua_State* L, StkId res, tvalue_t* arg0, int nresul
 
 static int __luauF_vectormax(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisvector(arg0) && ttisvector(args))
     {
         const float* a = vvalue(arg0);
@@ -1819,6 +1907,7 @@ static int __luauF_vectormax(lua_State* L, StkId res, tvalue_t* arg0, int nresul
 
 static int __luauF_vectorlerp(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 3 && nresults <= 1 && ttisvector(arg0) && ttisvector(args) && ttisnumber(args + 1))
     {
         const float* a = vvalue(arg0);
@@ -1839,6 +1928,7 @@ static int __luauF_vectorlerp(lua_State* L, StkId res, tvalue_t* arg0, int nresu
 
 static int __luauF_lerp(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 3 && nresults <= 1 && ttisnumber(arg0) && ttisnumber(args) && ttisnumber(args + 1))
     {
         double a = nvalue(arg0);
@@ -1856,6 +1946,7 @@ static int __luauF_lerp(lua_State* L, StkId res, tvalue_t* arg0, int nresults, S
 
 static int __luauF_isnan(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double x = nvalue(arg0);
@@ -1869,6 +1960,7 @@ static int __luauF_isnan(lua_State* L, StkId res, tvalue_t* arg0, int nresults, 
 
 static int __luauF_isinf(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double x = nvalue(arg0);
@@ -1882,6 +1974,7 @@ static int __luauF_isinf(lua_State* L, StkId res, tvalue_t* arg0, int nresults, 
 
 static int __luauF_isfinite(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double x = nvalue(arg0);
@@ -1895,6 +1988,7 @@ static int __luauF_isfinite(lua_State* L, StkId res, tvalue_t* arg0, int nresult
 
 static int __luauF_integertonumber(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisinteger(arg0))
     {
         setnvalue(res, cast_num(lvalue(arg0)));
@@ -1906,6 +2000,7 @@ static int __luauF_integertonumber(lua_State* L, StkId res, tvalue_t* arg0, int 
 
 static int __luauF_integeradd(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisinteger(arg0) && ttisinteger(args))
     {
         int64_t a1 = lvalue(arg0);
@@ -1919,6 +2014,7 @@ static int __luauF_integeradd(lua_State* L, StkId res, tvalue_t* arg0, int nresu
 
 static int __luauF_integersub(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisinteger(arg0) && ttisinteger(args))
     {
         int64_t a1 = lvalue(arg0);
@@ -1932,6 +2028,7 @@ static int __luauF_integersub(lua_State* L, StkId res, tvalue_t* arg0, int nresu
 
 static int __luauF_integerneg(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisinteger(arg0))
     {
         setlvalue(res, (int64_t)(~(uint64_t)lvalue(arg0) + 1));
@@ -1943,6 +2040,7 @@ static int __luauF_integerneg(lua_State* L, StkId res, tvalue_t* arg0, int nresu
 
 static int __luauF_integerdiv(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisinteger(arg0) && ttisinteger(args))
     {
         int64_t a = lvalue(arg0);
@@ -1960,6 +2058,7 @@ static int __luauF_integerdiv(lua_State* L, StkId res, tvalue_t* arg0, int nresu
 
 static int __luauF_integerudiv(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisinteger(arg0) && ttisinteger(args))
     {
         uint64_t a = (uint64_t)lvalue(arg0);
@@ -1977,6 +2076,7 @@ static int __luauF_integerudiv(lua_State* L, StkId res, tvalue_t* arg0, int nres
 
 static int __luauF_integerband(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisinteger(arg0))
     {
         uint64_t r = (uint64_t)lvalue(arg0);
@@ -1998,6 +2098,7 @@ static int __luauF_integerband(lua_State* L, StkId res, tvalue_t* arg0, int nres
 
 static int __luauF_integerbor(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisinteger(arg0))
     {
         uint64_t r = (uint64_t)lvalue(arg0);
@@ -2019,6 +2120,7 @@ static int __luauF_integerbor(lua_State* L, StkId res, tvalue_t* arg0, int nresu
 
 static int __luauF_integerbxor(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisinteger(arg0))
     {
         uint64_t r = (uint64_t)lvalue(arg0);
@@ -2040,6 +2142,7 @@ static int __luauF_integerbxor(lua_State* L, StkId res, tvalue_t* arg0, int nres
 
 static int __luauF_integerbnot(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisinteger(arg0))
     {
         setlvalue(res, ~(uint64_t)lvalue(arg0));
@@ -2051,6 +2154,7 @@ static int __luauF_integerbnot(lua_State* L, StkId res, tvalue_t* arg0, int nres
 
 static int __luauF_integerbswap(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisinteger(arg0))
     {
         uint64_t a = (uint64_t)lvalue(arg0);
@@ -2069,6 +2173,7 @@ static int __luauF_integerbswap(lua_State* L, StkId res, tvalue_t* arg0, int nre
 
 static int __luauF_integerbtest(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisinteger(arg0))
     {
         uint64_t r = (uint64_t)lvalue(arg0);
@@ -2090,6 +2195,7 @@ static int __luauF_integerbtest(lua_State* L, StkId res, tvalue_t* arg0, int nre
 
 static int __luauF_integerlt(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisinteger(arg0) && ttisinteger(args))
     {
         int64_t a = lvalue(arg0);
@@ -2104,6 +2210,7 @@ static int __luauF_integerlt(lua_State* L, StkId res, tvalue_t* arg0, int nresul
 
 static int __luauF_integerle(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisinteger(arg0) && ttisinteger(args))
     {
         int64_t a = lvalue(arg0);
@@ -2118,6 +2225,7 @@ static int __luauF_integerle(lua_State* L, StkId res, tvalue_t* arg0, int nresul
 
 static int __luauF_integergt(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisinteger(arg0) && ttisinteger(args))
     {
         int64_t a = lvalue(arg0);
@@ -2132,6 +2240,7 @@ static int __luauF_integergt(lua_State* L, StkId res, tvalue_t* arg0, int nresul
 
 static int __luauF_integerge(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisinteger(arg0) && ttisinteger(args))
     {
         int64_t a = lvalue(arg0);
@@ -2146,6 +2255,7 @@ static int __luauF_integerge(lua_State* L, StkId res, tvalue_t* arg0, int nresul
 
 static int __luauF_integerult(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisinteger(arg0) && ttisinteger(args))
     {
         uint64_t a = (uint64_t)lvalue(arg0);
@@ -2160,6 +2270,7 @@ static int __luauF_integerult(lua_State* L, StkId res, tvalue_t* arg0, int nresu
 
 static int __luauF_integerule(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisinteger(arg0) && ttisinteger(args))
     {
         uint64_t a = (uint64_t)lvalue(arg0);
@@ -2174,6 +2285,7 @@ static int __luauF_integerule(lua_State* L, StkId res, tvalue_t* arg0, int nresu
 
 static int __luauF_integerugt(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisinteger(arg0) && ttisinteger(args))
     {
         uint64_t a = (uint64_t)lvalue(arg0);
@@ -2188,6 +2300,7 @@ static int __luauF_integerugt(lua_State* L, StkId res, tvalue_t* arg0, int nresu
 
 static int __luauF_integeruge(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisinteger(arg0) && ttisinteger(args))
     {
         uint64_t a = (uint64_t)lvalue(arg0);
@@ -2202,6 +2315,7 @@ static int __luauF_integeruge(lua_State* L, StkId res, tvalue_t* arg0, int nresu
 
 static int __luauF_integerurem(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisinteger(arg0) && ttisinteger(args))
     {
         uint64_t a = (uint64_t)lvalue(arg0);
@@ -2219,6 +2333,7 @@ static int __luauF_integerurem(lua_State* L, StkId res, tvalue_t* arg0, int nres
 
 static int __luauF_integerrem(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisinteger(arg0) && ttisinteger(args))
     {
         int64_t a = lvalue(arg0);
@@ -2237,6 +2352,7 @@ static int __luauF_integerrem(lua_State* L, StkId res, tvalue_t* arg0, int nresu
 
 static int __luauF_integercountlz(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisinteger(arg0))
     {
         uint64_t n = (uint64_t)lvalue(arg0);
@@ -2253,6 +2369,7 @@ static int __luauF_integercountlz(lua_State* L, StkId res, tvalue_t* arg0, int n
 
 static int __luauF_integercountrz(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisinteger(arg0))
     {
         uint64_t n = (uint64_t)lvalue(arg0);
@@ -2269,6 +2386,7 @@ static int __luauF_integercountrz(lua_State* L, StkId res, tvalue_t* arg0, int n
 
 static int __luauF_integerextract(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if ((nparams >= 3) && !ttisinteger(args + 1))
         return -1;
 
@@ -2290,6 +2408,7 @@ static int __luauF_integerextract(lua_State* L, StkId res, tvalue_t* arg0, int n
 
 static int __luauF_integerclamp(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 3 && nresults <= 1 && ttisinteger(arg0) && ttisinteger(args) && ttisinteger(args + 1))
     {
         int64_t a = lvalue(arg0);
@@ -2308,6 +2427,7 @@ static int __luauF_integerclamp(lua_State* L, StkId res, tvalue_t* arg0, int nre
 
 static int __luauF_integerlrotate(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisinteger(arg0) && ttisinteger(args))
     {
         uint64_t n = (uint64_t)lvalue(arg0);
@@ -2323,6 +2443,7 @@ static int __luauF_integerlrotate(lua_State* L, StkId res, tvalue_t* arg0, int n
 
 static int __luauF_integerrrotate(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisinteger(arg0) && ttisinteger(args))
     {
         uint64_t n = (uint64_t)lvalue(arg0);
@@ -2338,6 +2459,7 @@ static int __luauF_integerrrotate(lua_State* L, StkId res, tvalue_t* arg0, int n
 
 static int __luauF_integerlshift(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisinteger(arg0) && ttisinteger(args))
     {
         uint64_t n = (uint64_t)lvalue(arg0);
@@ -2353,6 +2475,7 @@ static int __luauF_integerlshift(lua_State* L, StkId res, tvalue_t* arg0, int nr
 
 static int __luauF_integerarshift(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisinteger(arg0) && ttisinteger(args))
     {
         int64_t n = lvalue(arg0);
@@ -2379,6 +2502,7 @@ static int __luauF_integerarshift(lua_State* L, StkId res, tvalue_t* arg0, int n
 
 static int __luauF_integerrshift(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisinteger(arg0) && ttisinteger(args))
     {
         uint64_t n = (uint64_t)lvalue(arg0);
@@ -2394,6 +2518,7 @@ static int __luauF_integerrshift(lua_State* L, StkId res, tvalue_t* arg0, int nr
 
 static int __luauF_integermin(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisinteger(arg0) && ttisinteger(args))
     {
         int64_t a1 = lvalue(arg0);
@@ -2420,6 +2545,7 @@ static int __luauF_integermin(lua_State* L, StkId res, tvalue_t* arg0, int nresu
 
 static int __luauF_integermax(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisinteger(arg0) && ttisinteger(args))
     {
         int64_t a1 = lvalue(arg0);
@@ -2446,6 +2572,7 @@ static int __luauF_integermax(lua_State* L, StkId res, tvalue_t* arg0, int nresu
 
 static int __luauF_integermul(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisinteger(arg0) && ttisinteger(args))
     {
         int64_t a1 = lvalue(arg0);
@@ -2459,6 +2586,7 @@ static int __luauF_integermul(lua_State* L, StkId res, tvalue_t* arg0, int nresu
 
 static int __luauF_integermod(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisinteger(arg0) && ttisinteger(args))
     {
         int64_t a1 = lvalue(arg0);
@@ -2486,6 +2614,7 @@ static int __luauF_integermod(lua_State* L, StkId res, tvalue_t* arg0, int nresu
 
 static int __luauF_integeridiv(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 2 && nresults <= 1 && ttisinteger(arg0) && ttisinteger(args))
     {
         int64_t a1 = lvalue(arg0);
@@ -2512,6 +2641,7 @@ static int __luauF_integeridiv(lua_State* L, StkId res, tvalue_t* arg0, int nres
 
 static int __luauF_integercreate(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     if (nparams >= 1 && nresults <= 1 && ttisnumber(arg0))
     {
         double a1 = nvalue(arg0);
@@ -2535,6 +2665,7 @@ static int __luauF_integercreate(lua_State* L, StkId res, tvalue_t* arg0, int nr
 
 static int __luauF_bufferreadlong(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
 #if !defined(LUAU_BIG_ENDIAN)
     if (nparams >= 2 && nresults <= 1 && ttisbuffer(arg0) && ttisnumber(args))
     {
@@ -2555,6 +2686,7 @@ static int __luauF_bufferreadlong(lua_State* L, StkId res, tvalue_t* arg0, int n
 
 static int __luauF_bufferwritelong(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
 #if !defined(LUAU_BIG_ENDIAN)
     if (nparams >= 3 && nresults <= 0 && ttisbuffer(arg0) && ttisnumber(args) && ttisinteger(args + 1))
     {
@@ -2574,6 +2706,7 @@ static int __luauF_bufferwritelong(lua_State* L, StkId res, tvalue_t* arg0, int 
 
 static int __luauF_missing(lua_State* L, StkId res, tvalue_t* arg0, int nresults, StkId args, int nparams)
 {
+    LUAUC_FASTCALL_USE_PARAMETERS();
     return -1;
 }
 

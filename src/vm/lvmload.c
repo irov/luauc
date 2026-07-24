@@ -421,7 +421,7 @@ static int __loadsafe(
                     if (headersize == 4)
                     {
                         p->typeinfo[0] = (typesize & 127) | (1 << 7);
-                        p->typeinfo[1] = typesize >> 7;
+                        p->typeinfo[1] = (uint8_t)(typesize >> 7);
                         p->typeinfo[2] = 0;
                         p->typeinfo[3] = 0;
                     }
@@ -532,7 +532,7 @@ static int __loadsafe(
             {
                 int keys = __readVarInt(data, size, &offset);
                 lua_table_t* h = luaH_new(L, 0, keys);
-                for (int i = 0; i < keys; ++i)
+                for (int key_index = 0; key_index < keys; ++key_index)
                 {
                     int key = __readVarInt(data, size, &offset);
                     tvalue_t* val = luaH_set(L, h, &p->k[key]);
@@ -550,7 +550,7 @@ static int __loadsafe(
                 __tempBufferAllocate(nilKeys, L, keys);
                 size_t nilKeysSize = 0;
 
-                for (uint32_t i = 0; i < keys; ++i)
+                for (uint32_t key_index = 0; key_index < keys; ++key_index)
                 {
                     int32_t key = __readVarInt(data, size, &offset);
                     tvalue_t* val = luaH_set(L, h, &p->k[key]);

@@ -5,6 +5,14 @@ project(luauc VERSION 0.729.0 LANGUAGES C)
 option(LUAUC_BUILD_TESTS "Build luauc tests" ON)
 option(LUAUC_ENABLE_SANITIZERS "Enable AddressSanitizer and UndefinedBehaviorSanitizer" OFF)
 
+function(luauc_enable_warnings target)
+    if(MSVC)
+        target_compile_options(${target} PRIVATE /W4 /WX)
+    else()
+        target_compile_options(${target} PRIVATE -Wall -Wextra -Wpedantic -Werror -pedantic-errors)
+    endif()
+endfunction()
+
 file(GLOB LUAUC_VM_SOURCES CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/vm/*.c"
 )
@@ -48,11 +56,7 @@ if(NOT WIN32)
     target_link_libraries(luauc PUBLIC m)
 endif()
 
-if(MSVC)
-    target_compile_options(luauc PRIVATE /W4)
-else()
-    target_compile_options(luauc PRIVATE -Wall -Wextra -Wpedantic -Werror=pedantic -pedantic-errors)
-endif()
+luauc_enable_warnings(luauc)
 
 if(LUAUC_ENABLE_SANITIZERS)
     if(MSVC)
@@ -79,11 +83,7 @@ if(LUAUC_BUILD_TESTS)
         C_EXTENSIONS OFF
     )
 
-    if(MSVC)
-        target_compile_options(luauc_common_test PRIVATE /W4)
-    else()
-        target_compile_options(luauc_common_test PRIVATE -Wall -Wextra -Wpedantic -Werror=pedantic -pedantic-errors)
-    endif()
+    luauc_enable_warnings(luauc_common_test)
 
     add_test(NAME luauc.common COMMAND luauc_common_test)
 
@@ -97,11 +97,7 @@ if(LUAUC_BUILD_TESTS)
         C_EXTENSIONS OFF
     )
 
-    if(MSVC)
-        target_compile_options(luauc_vm_test PRIVATE /W4)
-    else()
-        target_compile_options(luauc_vm_test PRIVATE -Wall -Wextra -Wpedantic -Werror=pedantic -pedantic-errors)
-    endif()
+    luauc_enable_warnings(luauc_vm_test)
 
     add_test(
         NAME luauc.vm.upstream_bytecode
@@ -122,11 +118,7 @@ if(LUAUC_BUILD_TESTS)
         C_EXTENSIONS OFF
     )
 
-    if(MSVC)
-        target_compile_options(luauc_bytecode_builder_test PRIVATE /W4)
-    else()
-        target_compile_options(luauc_bytecode_builder_test PRIVATE -Wall -Wextra -Wpedantic -Werror=pedantic -pedantic-errors)
-    endif()
+    luauc_enable_warnings(luauc_bytecode_builder_test)
 
     add_test(
         NAME luauc.bytecode_builder.oracle
@@ -147,11 +139,7 @@ if(LUAUC_BUILD_TESTS)
         C_EXTENSIONS OFF
     )
 
-    if(MSVC)
-        target_compile_options(luauc_parser_test PRIVATE /W4)
-    else()
-        target_compile_options(luauc_parser_test PRIVATE -Wall -Wextra -Wpedantic -Werror=pedantic -pedantic-errors)
-    endif()
+    luauc_enable_warnings(luauc_parser_test)
 
     add_test(
         NAME luauc.parser.smoke
@@ -168,11 +156,7 @@ if(LUAUC_BUILD_TESTS)
         C_EXTENSIONS OFF
     )
 
-    if(MSVC)
-        target_compile_options(luauc_compiler_test PRIVATE /W4)
-    else()
-        target_compile_options(luauc_compiler_test PRIVATE -Wall -Wextra -Wpedantic -Werror=pedantic -pedantic-errors)
-    endif()
+    luauc_enable_warnings(luauc_compiler_test)
 
     add_test(NAME luauc.compiler.smoke COMMAND luauc_compiler_test)
     add_test(
@@ -196,11 +180,7 @@ if(LUAUC_BUILD_TESTS)
         C_EXTENSIONS OFF
     )
 
-    if(MSVC)
-        target_compile_options(luauc_typeinfo_test PRIVATE /W4)
-    else()
-        target_compile_options(luauc_typeinfo_test PRIVATE -Wall -Wextra -Wpedantic -Werror=pedantic -pedantic-errors)
-    endif()
+    luauc_enable_warnings(luauc_typeinfo_test)
 
     add_test(NAME luauc.compiler.typeinfo COMMAND luauc_typeinfo_test)
 
@@ -219,11 +199,7 @@ if(LUAUC_BUILD_TESTS)
         C_EXTENSIONS OFF
     )
 
-    if(MSVC)
-        target_compile_options(luauc_conformance_runner PRIVATE /W4)
-    else()
-        target_compile_options(luauc_conformance_runner PRIVATE -Wall -Wextra -Wpedantic -Werror=pedantic -pedantic-errors)
-    endif()
+    luauc_enable_warnings(luauc_conformance_runner)
 
     file(GLOB LUAUC_CONFORMANCE_FIXTURES CONFIGURE_DEPENDS
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/conformance/*.luau"

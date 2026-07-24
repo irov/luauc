@@ -255,6 +255,7 @@ static void __validategraylist(global_state_t* g, gc_object_t* o)
 
 static bool __validategco(void* context, lua_page_t* page, gc_object_t* gco)
 {
+    (void)page;
     lua_State* L = (lua_State*)context;
     global_state_t* g = L->global;
 
@@ -670,6 +671,7 @@ static void __dumpobj(FILE* f, gc_object_t* o)
 
 static bool __dumpgco(void* context, lua_page_t* page, gc_object_t* gco)
 {
+    (void)page;
     FILE* f = (FILE*)context;
 
     __dumpref(f, gco);
@@ -710,7 +712,7 @@ void luaC_dump(lua_State* L, void* file, const char* (*categoryName)(lua_State* 
         if (bytes)
         {
             if (categoryName)
-                fprintf(f, "\"%d\":{\"name\":\"%s\", \"size\":%d},\n", i, categoryName(L, i), ((int)(bytes)));
+                fprintf(f, "\"%d\":{\"name\":\"%s\", \"size\":%d},\n", i, categoryName(L, (uint8_t)i), ((int)(bytes)));
             else
                 fprintf(f, "\"%d\":{\"size\":%d},\n", i, ((int)(bytes)));
         }
@@ -1061,6 +1063,7 @@ static void __enumobj(enum_context_t* ctx, gc_object_t* o)
 
 static bool __enumgco(void* context, lua_page_t* page, gc_object_t* gco)
 {
+    (void)page;
     __enumobj((enum_context_t*)context, gco);
     return false;
 }

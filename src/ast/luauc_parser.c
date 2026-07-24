@@ -38,7 +38,7 @@ typedef struct luauc_parser_t
     luauc_location_t error_location;
     char* error_message;
     size_t error_capacity;
-    jmp_buf error_jump;
+    jmp_buf* error_jump;
 } luauc_parser_t;
 
 static luauc_ast_stat_t* __luauc_parse_block(luauc_parser_t* parser, int scoped);
@@ -59,7 +59,7 @@ static void* __luauc_parser_allocate(luauc_parser_t* parser, size_t size, size_t
     if (result == NULL)
     {
         parser->failed = 1;
-        longjmp(parser->error_jump, 1);
+        longjmp(*parser->error_jump, 1);
     }
     memset(result, 0, size);
     return result;
@@ -76,9 +76,9 @@ static luauc_array_t __luauc_parser_copy_array(luauc_parser_t* parser, const lua
     if (!luauc_size_multiply(vector->size, vector->element_size, &bytes))
     {
         parser->failed = 1;
-        longjmp(parser->error_jump, 1);
+        longjmp(*parser->error_jump, 1);
     }
-    result.data = __luauc_parser_allocate(parser, bytes, _Alignof(max_align_t));
+    result.data = __luauc_parser_allocate(parser, bytes, _Alignof(luauc_max_align_t));
     memcpy(result.data, vector->data, bytes);
     result.size = vector->size;
     return result;
@@ -109,7 +109,7 @@ static void __luauc_parser_error(luauc_parser_t* parser, luauc_location_t locati
     {
         va_end(arguments);
         parser->failed = 1;
-        longjmp(parser->error_jump, 1);
+        longjmp(*parser->error_jump, 1);
     }
     if ((size_t)length + 1 > parser->error_capacity)
     {
@@ -120,14 +120,14 @@ static void __luauc_parser_error(luauc_parser_t* parser, luauc_location_t locati
         {
             va_end(arguments);
             parser->failed = 1;
-            longjmp(parser->error_jump, 1);
+            longjmp(*parser->error_jump, 1);
         }
         parser->error_message = (char*)memory;
         parser->error_capacity = (size_t)length + 1;
     }
     vsnprintf(parser->error_message, parser->error_capacity, format, arguments);
     va_end(arguments);
-    longjmp(parser->error_jump, 1);
+    longjmp(*parser->error_jump, 1);
 }
 
 static int __luauc_name_is(luauc_name_t name, const char* text)
@@ -197,7 +197,7 @@ static void __luauc_parser_next(luauc_parser_t* parser)
             if (text == NULL)
             {
                 parser->failed = 1;
-                longjmp(parser->error_jump, 1);
+                longjmp(*parser->error_jump, 1);
             }
             comment.header = parser->hot_comment_header;
             comment.location = token->location;
@@ -206,7 +206,7 @@ static void __luauc_parser_next(luauc_parser_t* parser)
             if (luauc_vector_push(&parser->hot_comments, &comment) == NULL)
             {
                 parser->failed = 1;
-                longjmp(parser->error_jump, 1);
+                longjmp(*parser->error_jump, 1);
             }
         }
         type = luauc_lexer_next_options(&parser->lexer, 0, 0)->type;
@@ -314,7 +314,7 @@ static luauc_ast_local_t* __luauc_parser_push_local(luauc_parser_t* parser, cons
     if (luauc_vector_push(&parser->locals, &local) == NULL)
     {
         parser->failed = 1;
-        longjmp(parser->error_jump, 1);
+        longjmp(*parser->error_jump, 1);
     }
     return local;
 }
@@ -344,7 +344,7 @@ static void __luauc_parse_generic_list(luauc_parser_t* parser, luauc_vector_t* g
             generic->location = __luauc_location_make(location.begin, parser->lexer.previous_location.end);
             generic->name = name;
             if (luauc_vector_push(generic_packs, &generic) == NULL)
-                longjmp(parser->error_jump, 1);
+                longjmp(*parser->error_jump, 1);
         }
         else
         {
@@ -352,7 +352,7 @@ static void __luauc_parse_generic_list(luauc_parser_t* parser, luauc_vector_t* g
             generic->location = location;
             generic->name = name;
             if (luauc_vector_push(generics, &generic) == NULL)
-                longjmp(parser->error_jump, 1);
+                longjmp(*parser->error_jump, 1);
         }
     } while (__luauc_parser_accept(parser, (luauc_token_type_t)','));
     __luauc_parser_expect(parser, (luauc_token_type_t)'>', "generic type list");
@@ -362,12 +362,12 @@ static void __luauc_parser_parse_expression_list(luauc_parser_t* parser, luauc_v
 {
     luauc_ast_expr_t* expression = __luauc_parse_expression(parser, 0);
     if (luauc_vector_push(expressions, &expression) == NULL)
-        longjmp(parser->error_jump, 1);
+        longjmp(*parser->error_jump, 1);
     while (__luauc_parser_accept(parser, (luauc_token_type_t)','))
     {
         expression = __luauc_parse_expression(parser, 0);
         if (luauc_vector_push(expressions, &expression) == NULL)
-            longjmp(parser->error_jump, 1);
+            longjmp(*parser->error_jump, 1);
     }
 }
 
@@ -979,7 +979,7 @@ static luauc_ast_stat_t* __luauc_parse_class_statement(luauc_parser_t* parser, l
             }
 
             if (luauc_vector_push(&members, &member) == NULL)
-                longjmp(parser->error_jump, 1);
+                longjmp(*parser->error_jump, 1);
         }
         else if (parser->lexer.token.type == LUAUC_TOKEN_FUNCTION)
         {
@@ -1000,7 +1000,7 @@ static luauc_ast_stat_t* __luauc_parse_class_statement(luauc_parser_t* parser, l
                 __luauc_parse_function_body(parser, keyword_location, method_name, 0, NULL, 0);
 
             if (luauc_vector_push(&members, &member) == NULL)
-                longjmp(parser->error_jump, 1);
+                longjmp(*parser->error_jump, 1);
         }
         else
         {
@@ -1054,7 +1054,7 @@ static luauc_ast_stat_t* __luauc_parse_attribute_statement(luauc_parser_t* parse
                 parser, attribute->location, "Invalid attribute '@%s'", attribute->name.value
             );
         if (luauc_vector_push(&attributes, &attribute) == NULL)
-            longjmp(parser->error_jump, 1);
+            longjmp(*parser->error_jump, 1);
         __luauc_parser_next(parser);
     }
 
@@ -1379,7 +1379,7 @@ static luauc_array_t __luauc_parser_copy_string(
     luauc_array_t result;
     char* data = luauc_arena_duplicate(parser->arena, source, length);
     if (data == NULL)
-        longjmp(parser->error_jump, 1);
+        longjmp(*parser->error_jump, 1);
     if (quoted)
     {
         if (!luauc_fixup_quoted_string(data, &length))
@@ -2265,11 +2265,13 @@ int luauc_parse(
 )
 {
     luauc_parser_t parser;
+    jmp_buf error_jump;
     int jumped;
     if (result == NULL || !__luauc_parser_init(&parser, source, size, arena, names, allocator))
         return 0;
     memset(result, 0, sizeof(*result));
-    jumped = setjmp(parser.error_jump);
+    parser.error_jump = &error_jump;
+    jumped = setjmp(error_jump);
     if (jumped == 0)
     {
         __luauc_parser_next(&parser);

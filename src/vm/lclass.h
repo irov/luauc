@@ -47,11 +47,20 @@ LUAI_FUNC int luaR_createobject(lua_State* L);
 
 LUAI_FUNC void luaR_freeobject(lua_State* L, luauc_object_t* classinstance, lua_page_t* page);
 
-#define luaR_checkoffsetinbounds(inst, offset) (((int)(offset)) >= 0 && ((int)(offset)) < (inst)->lclass->numberofallmembers)
+static inline int __luaR_checkoffsetinbounds(const luauc_object_t* instance, int offset)
+{
+    return offset >= 0 && offset < instance->lclass->numberofallmembers;
+}
 
-#define luaR_lookupmemberatoffset(inst, offset) \
-    (LUAU_ASSERT(luaR_checkoffsetinbounds(inst, offset)), \
-     offset < (inst)->lclass->numberofinstancemembers ? &(inst)->members[offset] \
-                                                      : &(inst)->lclass->staticmembers[offset - inst->lclass->numberofinstancemembers])
+static inline tvalue_t* __luaR_lookupmemberatoffset(luauc_object_t* instance, int offset)
+{
+    LUAU_ASSERT(__luaR_checkoffsetinbounds(instance, offset));
+    return offset < instance->lclass->numberofinstancemembers
+        ? &instance->members[offset]
+        : &instance->lclass->staticmembers[offset - instance->lclass->numberofinstancemembers];
+}
+
+#define luaR_checkoffsetinbounds(inst, offset) __luaR_checkoffsetinbounds((inst), (int)(offset))
+#define luaR_lookupmemberatoffset(inst, offset) __luaR_lookupmemberatoffset((inst), (int)(offset))
 
 #endif

@@ -16,8 +16,6 @@
 #define LUAU_UNLIKELY(value) (value)
 #define LUAU_UNREACHABLE() abort()
 #define LUAU_DEBUGBREAK() abort()
-#define LUAU_FALLTHROUGH ((void)0)
-
 #if defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
 #define LUAU_BIG_ENDIAN
 #endif

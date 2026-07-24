@@ -60,7 +60,7 @@ int luaO_rawequalObj(const tvalue_t* t1, const tvalue_t* t2)
 
 int luaO_rawequalKey(const table_key_t* t1, const tvalue_t* t2)
 {
-    if (ttype(t1) != ttype(t2))
+    if ((int)ttype(t1) != ttype(t2))
         return 0;
     else
         switch (ttype(t1))
@@ -179,15 +179,22 @@ const char* luaO_chunkid(char* buf, size_t buflen, const char* source, size_t sr
         buflen -= sizeof("[string \"...\"]");
         if (len > buflen)
             len = buflen;
-        strcpy(buf, "[string \"");
+        char* output = buf;
+        memcpy(output, "[string \"", sizeof("[string \"") - 1);
+        output += sizeof("[string \"") - 1;
         if (source[len] != '\0')
         { // must truncate?
-            strncat(buf, source, len);
-            strcat(buf, "...");
+            memcpy(output, source, len);
+            output += len;
+            memcpy(output, "...", sizeof("...") - 1);
+            output += sizeof("...") - 1;
         }
         else
-            strcat(buf, source);
-        strcat(buf, "\"]");
+        {
+            memcpy(output, source, len);
+            output += len;
+        }
+        memcpy(output, "\"]", sizeof("\"]"));
     }
     return buf;
 }

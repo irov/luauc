@@ -321,7 +321,7 @@ LUA_API size_t lua_totalbytes(lua_State* L, int category);
 ** miscellaneous functions
 */
 
-LUA_API l_noret lua_error(lua_State* L);
+LUA_NORETURN LUA_API void lua_error(lua_State* L);
 
 LUA_API int lua_next(lua_State* L, int idx);
 LUA_API int lua_rawiter(lua_State* L, int idx, int iter);

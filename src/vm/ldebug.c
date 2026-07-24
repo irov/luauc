@@ -18,6 +18,7 @@ static const char* __getfuncname(closure_t* cl);
 
 static int __currentpc(lua_State* L, call_info_t* ci)
 {
+    (void)L;
     if (FFlag_LuauCIProto)
         return pcRel(ci->savedpc, ci->p);
     else
@@ -252,21 +253,21 @@ static const char* __getfuncname(closure_t* cl)
     return NULL;
 }
 
-l_noret luaG_typeerrorL(lua_State* L, const tvalue_t* o, const char* op)
+LUA_NORETURN void luaG_typeerrorL(lua_State* L, const tvalue_t* o, const char* op)
 {
     const char* t = luaT_objtypename(L, o);
 
     luaG_runerror(L, "attempt to %s a %s value", op, t);
 }
 
-l_noret luaG_forerrorL(lua_State* L, const tvalue_t* o, const char* what)
+LUA_NORETURN void luaG_forerrorL(lua_State* L, const tvalue_t* o, const char* what)
 {
     const char* t = luaT_objtypename(L, o);
 
     luaG_runerror(L, "invalid 'for' %s (number expected, got %s)", what, t);
 }
 
-l_noret luaG_concaterror(lua_State* L, StkId p1, StkId p2)
+LUA_NORETURN void luaG_concaterror(lua_State* L, StkId p1, StkId p2)
 {
     const char* t1 = luaT_objtypename(L, p1);
     const char* t2 = luaT_objtypename(L, p2);
@@ -274,7 +275,7 @@ l_noret luaG_concaterror(lua_State* L, StkId p1, StkId p2)
     luaG_runerror(L, "attempt to concatenate %s with %s", t1, t2);
 }
 
-l_noret luaG_aritherror(lua_State* L, const tvalue_t* p1, const tvalue_t* p2, tag_method_t op)
+LUA_NORETURN void luaG_aritherror(lua_State* L, const tvalue_t* p1, const tvalue_t* p2, tag_method_t op)
 {
     const char* t1 = luaT_objtypename(L, p1);
     const char* t2 = luaT_objtypename(L, p2);
@@ -286,7 +287,7 @@ l_noret luaG_aritherror(lua_State* L, const tvalue_t* p1, const tvalue_t* p2, ta
         luaG_runerror(L, "attempt to perform arithmetic (%s) on %s and %s", opname, t1, t2);
 }
 
-l_noret luaG_ordererror(lua_State* L, const tvalue_t* p1, const tvalue_t* p2, tag_method_t op)
+LUA_NORETURN void luaG_ordererror(lua_State* L, const tvalue_t* p1, const tvalue_t* p2, tag_method_t op)
 {
     const char* t1 = luaT_objtypename(L, p1);
     const char* t2 = luaT_objtypename(L, p2);
@@ -295,7 +296,7 @@ l_noret luaG_ordererror(lua_State* L, const tvalue_t* p1, const tvalue_t* p2, ta
     luaG_runerror(L, "attempt to compare %s %s %s", t1, opname, t2);
 }
 
-l_noret luaG_indexerror(lua_State* L, const tvalue_t* p1, const tvalue_t* p2)
+LUA_NORETURN void luaG_indexerror(lua_State* L, const tvalue_t* p1, const tvalue_t* p2)
 {
     const char* t1 = luaT_objtypename(L, p1);
     const char* t2 = luaT_objtypename(L, p2);
@@ -307,7 +308,7 @@ l_noret luaG_indexerror(lua_State* L, const tvalue_t* p1, const tvalue_t* p2)
         luaG_runerror(L, "attempt to index %s with %s", t1, t2);
 }
 
-l_noret luaG_missingmembererror(lua_State* L, const tvalue_t* p1, const tvalue_t* p2)
+LUA_NORETURN void luaG_missingmembererror(lua_State* L, const tvalue_t* p1, const tvalue_t* p2)
 {
     if (!ttisstring(p2))
         luaG_runerrorL(L, "cannot index %s with a %s", luaT_objtypename(L, p1), luaT_objtypename(L, p2));
@@ -315,14 +316,14 @@ l_noret luaG_missingmembererror(lua_State* L, const tvalue_t* p1, const tvalue_t
         luaG_runerrorL(L, "this %s does not have a key named '%s'", luaT_objtypename(L, p1), getstr(tsvalue(p2)));
 }
 
-l_noret luaG_methoderror(lua_State* L, const tvalue_t* p1, const tstring_t* p2)
+LUA_NORETURN void luaG_methoderror(lua_State* L, const tvalue_t* p1, const tstring_t* p2)
 {
     const char* t1 = luaT_objtypename(L, p1);
 
     luaG_runerror(L, "attempt to call missing method '%s' of %s", getstr(p2), t1);
 }
 
-l_noret luaG_readonlyerror(lua_State* L)
+LUA_NORETURN void luaG_readonlyerror(lua_State* L)
 {
     luaG_runerror(L, "attempt to modify a readonly table");
 }
@@ -344,7 +345,7 @@ static void __pusherror(lua_State* L, const char* msg)
     }
 }
 
-l_noret luaG_runerrorL(lua_State* L, const char* fmt, ...)
+LUA_NORETURN void luaG_runerrorL(lua_State* L, const char* fmt, ...)
 {
     va_list argp;
     va_start(argp, fmt);

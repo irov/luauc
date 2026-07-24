@@ -9,27 +9,23 @@
 
 #define LUA_STRFTIMEOPTIONS "aAbBcdHIjmMpSUwWxXyYzZ%"
 
-#if defined(_WIN32)
 static struct tm* __gmtime_r(const time_t* timep, struct tm* result)
 {
-    return gmtime_s(result, timep) == 0 ? result : NULL;
+    struct tm* value = gmtime(timep);
+    if (value == NULL)
+        return NULL;
+    *result = *value;
+    return result;
 }
 
 static struct tm* __localtime_r(const time_t* timep, struct tm* result)
 {
-    return localtime_s(result, timep) == 0 ? result : NULL;
+    struct tm* value = localtime(timep);
+    if (value == NULL)
+        return NULL;
+    *result = *value;
+    return result;
 }
-#else
-static struct tm* __gmtime_r(const time_t* timep, struct tm* result)
-{
-    return gmtime_r(timep, result);
-}
-
-static struct tm* __localtime_r(const time_t* timep, struct tm* result)
-{
-    return localtime_r(timep, result);
-}
-#endif
 
 static time_t __os_timegm(struct tm* timep)
 {

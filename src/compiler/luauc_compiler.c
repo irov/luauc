@@ -108,7 +108,7 @@ typedef struct luauc_compiler_t
     luauc_location_t error_location;
     char* error_message;
     size_t error_capacity;
-    jmp_buf error_jump;
+    jmp_buf* error_jump;
 } luauc_compiler_t;
 
 static void __luauc_compile_statement(luauc_compiler_t* compiler, luauc_ast_stat_t* statement);
@@ -137,7 +137,7 @@ static void __luauc_compiler_raise(luauc_compiler_t* compiler, luauc_location_t 
     {
         va_end(arguments);
         compiler->failed = 1;
-        longjmp(compiler->error_jump, 1);
+        longjmp(*compiler->error_jump, 1);
     }
     if ((size_t)length + 1 > compiler->error_capacity)
     {
@@ -151,14 +151,14 @@ static void __luauc_compiler_raise(luauc_compiler_t* compiler, luauc_location_t 
         {
             va_end(arguments);
             compiler->failed = 1;
-            longjmp(compiler->error_jump, 1);
+            longjmp(*compiler->error_jump, 1);
         }
         compiler->error_message = (char*)memory;
         compiler->error_capacity = (size_t)length + 1;
     }
     vsnprintf(compiler->error_message, compiler->error_capacity, format, arguments);
     va_end(arguments);
-    longjmp(compiler->error_jump, 1);
+    longjmp(*compiler->error_jump, 1);
 }
 
 static void __luauc_compiler_check(luauc_compiler_t* compiler, int condition, luauc_location_t location)
@@ -3208,6 +3208,7 @@ int luauc_compile_tree(
 {
     luauc_compiler_t compiler;
     luauc_compiler_function_t main_function;
+    jmp_buf error_jump;
     uint8_t main_flags;
     size_t index;
     int jumped;
@@ -3219,7 +3220,8 @@ int luauc_compile_tree(
         return 0;
     memset(&main_function, 0, sizeof(main_function));
 
-    jumped = setjmp(compiler.error_jump);
+    compiler.error_jump = &error_jump;
+    jumped = setjmp(error_jump);
     if (jumped == 0)
     {
         main_flags = __luauc_apply_hot_comments(&compiler, hot_comments);

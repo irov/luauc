@@ -19,8 +19,8 @@ typedef struct luaL_Reg luaL_Reg;
 LUALIB_API void luaL_register(lua_State* L, const char* libname, const luaL_Reg* l);
 LUALIB_API int luaL_getmetafield(lua_State* L, int obj, const char* e);
 LUALIB_API int luaL_callmeta(lua_State* L, int obj, const char* e);
-LUALIB_API l_noret luaL_typeerrorL(lua_State* L, int narg, const char* tname);
-LUALIB_API l_noret luaL_argerrorL(lua_State* L, int narg, const char* extramsg);
+LUA_NORETURN LUALIB_API void luaL_typeerrorL(lua_State* L, int narg, const char* tname);
+LUA_NORETURN LUALIB_API void luaL_argerrorL(lua_State* L, int narg, const char* extramsg);
 LUALIB_API const char* luaL_checklstring(lua_State* L, int numArg, size_t* l);
 LUALIB_API const char* luaL_optlstring(lua_State* L, int numArg, const char* def, size_t* l);
 LUALIB_API double luaL_checknumber(lua_State* L, int numArg);
@@ -50,7 +50,7 @@ LUALIB_API void* luaL_checkudatatagged(lua_State* L, int ud, int tag);
 LUALIB_API void* luaL_checkbuffer(lua_State* L, int narg, size_t* len);
 
 LUALIB_API void luaL_where(lua_State* L, int lvl);
-LUALIB_API LUA_PRINTF_ATTR(2, 3) l_noret luaL_errorL(lua_State* L, const char* fmt, ...);
+LUA_NORETURN LUALIB_API LUA_PRINTF_ATTR(2, 3) void luaL_errorL(lua_State* L, const char* fmt, ...);
 
 LUALIB_API int luaL_checkoption(lua_State* L, int narg, const char* def, const char* const lst[]);
 

@@ -593,7 +593,13 @@ typedef struct luauc_object_t
 /*
 ** `module' operation for hashing (size is always a power of 2)
 */
-#define lmod(s, size) (check_exp((size & (size - 1)) == 0, (cast_to(int, (s) & ((size)-1)))))
+static inline int __lmod(unsigned int value, int size)
+{
+    LUAU_ASSERT((size & (size - 1)) == 0);
+    return (int)(value & (unsigned int)(size - 1));
+}
+
+#define lmod(s, size) __lmod((unsigned int)(s), (int)(size))
 
 #define twoto(x) ((int)(1 << (x)))
 #define sizenode(t) (twoto((t)->lsizenode))

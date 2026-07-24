@@ -29,7 +29,7 @@ typedef struct lua_jmpbuf_t
 {
     struct lua_jmpbuf_t* volatile prev;
     volatile int status;
-    jmp_buf buf;
+    jmp_buf* buf;
 } lua_jmpbuf_t;
 
 #define LUAU_SETJMP(buf) setjmp(buf)
@@ -37,25 +37,27 @@ typedef struct lua_jmpbuf_t
 
 int luaD_rawrunprotected(lua_State* L, Pfunc f, void* ud)
 {
+    jmp_buf jump_buffer;
     lua_jmpbuf_t jb;
     jb.prev = L->global->errorjmp;
     jb.status = 0;
+    jb.buf = &jump_buffer;
     L->global->errorjmp = &jb;
 
-    if (LUAU_SETJMP(jb.buf) == 0)
+    if (LUAU_SETJMP(jump_buffer) == 0)
         f(L, ud);
 
     L->global->errorjmp = jb.prev;
     return jb.status;
 }
 
-l_noret luaD_throw(lua_State* L, int errcode)
+LUA_NORETURN void luaD_throw(lua_State* L, int errcode)
 {
     lua_jmpbuf_t* jb = L->global->errorjmp;
     if (jb)
     {
         jb->status = errcode;
-        LUAU_LONGJMP(jb->buf, 1);
+        LUAU_LONGJMP(*jb->buf, 1);
     }
 
     if (L->global->cb.panic)
@@ -592,7 +594,7 @@ static int __resume_finish(lua_State* L, int status, int oldnCcalls)
         }
 
         // restore the baseline we established in resume_start
-        L->nCcalls = oldnCcalls;
+        L->nCcalls = (unsigned short)oldnCcalls;
         L->baseCcalls = L->nCcalls;
 
         L->status = cast_byte(status);
@@ -600,7 +602,7 @@ static int __resume_finish(lua_State* L, int status, int oldnCcalls)
     }
 
     // C call count base was set to an incremented value of C call count in resume, so we decrement here
-    L->nCcalls = oldnCcalls - 1;
+    L->nCcalls = (unsigned short)(oldnCcalls - 1);
 
     // make execution context non-yieldable as we are leaving the resume
     L->baseCcalls = L->nCcalls;

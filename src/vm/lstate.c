@@ -58,6 +58,7 @@ static void __freestack(lua_State* L, lua_State* L1)
 */
 static void __f_luaopen(lua_State* L, void* ud)
 {
+    (void)ud;
     global_state_t* g = L->global;
     __stack_init(L, L);                             // init stack
     L->gt = luaH_new(L, 0, 2);                    // table of globals

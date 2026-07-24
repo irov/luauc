@@ -176,6 +176,15 @@ static LUAU_NOINLINE void __luau_setupcci(lua_State* L, int nresults, StkId fun)
     LUAU_ASSERT(ttisfunction(ci->func));
 }
 
+static lua_UserdataDirectFieldGet __get_user_data_direct_field_callback(const tvalue_t* value)
+{
+    lua_UserdataDirectFieldGet callback;
+    udata_t* userdata = uvalue(value);
+    LUAU_ASSERT(userdata->len == sizeof(callback));
+    memcpy(&callback, userdata->data, sizeof(callback));
+    return callback;
+}
+
 static void __luau_execute_impl(lua_State* L, bool singleStep)
 {
     // the critical interpreter state, stored in locals for performance
@@ -494,10 +503,7 @@ reentry:
 
                             if (LUAU_LIKELY(ttisstring(gkey(n)) && tsvalue(gkey(n)) == tsvalue(kv) && !ttisnil(gval(n))))
                             {
-                                lua_UserdataDirectFieldGet fn;
-                                void* fnvalue = pvalue(gval(n));
-                                _Static_assert(sizeof(fn) == sizeof(fnvalue), "direct field callback pointer size mismatch");
-                                memcpy(&fn, &fnvalue, sizeof(fn));
+                                lua_UserdataDirectFieldGet fn = __get_user_data_direct_field_callback(gval(n));
                                 fn(uvalue(rb)->data, ra);
                                 VM_NEXT();
                             }
@@ -507,10 +513,7 @@ reentry:
                             {
                                 // cache slot for future lookups
                                 VM_PATCH_C(pc - 2, gval2slot(dispatch, fptr));
-                                lua_UserdataDirectFieldGet fn;
-                                void* fnvalue = pvalue(fptr);
-                                _Static_assert(sizeof(fn) == sizeof(fnvalue), "direct field callback pointer size mismatch");
-                                memcpy(&fn, &fnvalue, sizeof(fn));
+                                lua_UserdataDirectFieldGet fn = __get_user_data_direct_field_callback(fptr);
                                 fn(uvalue(rb)->data, ra);
                                 VM_NEXT();
                             }
@@ -987,12 +990,13 @@ reentry:
                 }
                 else
                 {
-                    // intentional fallthrough to CALL
                     LUAU_ASSERT(LUAU_INSN_OP(*pc) == LOP_CALL);
+                    goto call_instruction;
                 }
             }
 
             VM_CASE(LOP_CALL)
+        call_instruction:
             {
                 VM_INTERRUPT();
                 VM_CASE_INSTRUCTION insn = *pc++;
@@ -1067,12 +1071,12 @@ reentry:
                         goto exit;
 
                     // ci is our callinfo, cip is our parent
-                    call_info_t* ci = L->ci;
-                    call_info_t* cip = ci - 1;
+                    call_info_t* current_ci = L->ci;
+                    call_info_t* cip = current_ci - 1;
 
                     // copy return values into parent stack (but only up to nresults!), fill the rest with nil
                     // note: in MULTRET context nresults starts as -1 so i != 0 condition never activates intentionally
-                    StkId res = ci->func;
+                    StkId res = current_ci->func;
                     StkId vali = L->top - n;
                     StkId valend = L->top;
 
@@ -1180,12 +1184,12 @@ reentry:
                         goto exit;
 
                     // ci is our callinfo, cip is our parent
-                    call_info_t* ci = L->ci;
-                    call_info_t* cip = ci - 1;
+                    call_info_t* current_ci = L->ci;
+                    call_info_t* cip = current_ci - 1;
 
                     // copy return values into parent stack (but only up to nresults!), fill the rest with nil
                     // note: in MULTRET context nresults starts as -1 so i != 0 condition never activates intentionally
-                    StkId res = ci->func;
+                    StkId res = current_ci->func;
                     StkId vali = L->top - n;
                     StkId valend = L->top;
 
@@ -3313,7 +3317,10 @@ reentry:
                 uint32_t aux = *pc;
                 VM_CASE_STKID ra = VM_REG(LUAU_INSN_A(insn));
 
-                pc += (int)(ttisboolean(ra) && bvalue(ra) == (int)(LUAU_INSN_AUX_KB(aux))) != LUAU_INSN_AUX_NOT(aux) ? LUAU_INSN_D(insn) : 1;
+                pc += (int)(ttisboolean(ra) && bvalue(ra) == (int)(LUAU_INSN_AUX_KB(aux))) !=
+                        (int)LUAU_INSN_AUX_NOT(aux)
+                    ? LUAU_INSN_D(insn)
+                    : 1;
                 VM_ASSERT_PC(pc);
                 VM_NEXT();
             }
@@ -3334,7 +3341,9 @@ reentry:
                 else
                     pc += (ttisnumber(ra) && nvalue(ra) == nvalue(kv)) ? LUAU_INSN_D(insn) : 1;
 #else
-                pc += (int)(ttisnumber(ra) && nvalue(ra) == nvalue(kv)) != LUAU_INSN_AUX_NOT(aux) ? LUAU_INSN_D(insn) : 1;
+                pc += (int)(ttisnumber(ra) && nvalue(ra) == nvalue(kv)) != (int)LUAU_INSN_AUX_NOT(aux)
+                    ? LUAU_INSN_D(insn)
+                    : 1;
 #endif
                 VM_ASSERT_PC(pc);
                 VM_NEXT();
@@ -3348,7 +3357,9 @@ reentry:
                 tvalue_t* kv = VM_KV(LUAU_INSN_AUX_KV(aux));
                 LUAU_ASSERT(ttisstring(kv));
 
-                pc += (int)(ttisstring(ra) && gcvalue(ra) == gcvalue(kv)) != LUAU_INSN_AUX_NOT(aux) ? LUAU_INSN_D(insn) : 1;
+                pc += (int)(ttisstring(ra) && gcvalue(ra) == gcvalue(kv)) != (int)LUAU_INSN_AUX_NOT(aux)
+                    ? LUAU_INSN_D(insn)
+                    : 1;
                 VM_ASSERT_PC(pc);
                 VM_NEXT();
             }
@@ -3603,20 +3614,20 @@ reentry:
 
             VM_CASE(LOP_CMPPROTO)
             {
-                Instruction insn = *pc++;
+                Instruction compare_instruction = *pc++;
                 uint32_t funid = *pc++;
-                StkId ra = VM_REG(LUAU_INSN_A(insn));
+                StkId compare_value = VM_REG(LUAU_INSN_A(compare_instruction));
 
-                if (LUAU_UNLIKELY(!ttisfunction(ra)))
+                if (LUAU_UNLIKELY(!ttisfunction(compare_value)))
                 {
-                    pc += LUAU_INSN_D(insn) - 1;
+                    pc += LUAU_INSN_D(compare_instruction) - 1;
                     VM_ASSERT_PC(pc);
                     VM_NEXT();
                 }
 
-                closure_t* ccl = clvalue(ra);
+                closure_t* ccl = clvalue(compare_value);
                 if (ccl->isC || ccl->l.p->funid != funid)
-                    pc += LUAU_INSN_D(insn) - 1;
+                    pc += LUAU_INSN_D(compare_instruction) - 1;
 
                 VM_ASSERT_PC(pc);
                 VM_NEXT();
@@ -3720,20 +3731,20 @@ int luau_precall(lua_State* L, StkId func, int nresults)
     }
     else
     {
-        lua_CFunction func = ccl->c.f;
-        int n = func(L);
+        lua_CFunction c_function = ccl->c.f;
+        int n = c_function(L);
 
         // yield
         if (n < 0)
             return PCRYIELD;
 
         // ci is our callinfo, cip is our parent
-        call_info_t* ci = L->ci;
-        call_info_t* cip = ci - 1;
+        call_info_t* current_ci = L->ci;
+        call_info_t* cip = current_ci - 1;
 
         // copy return values into parent stack (but only up to nresults!), fill the rest with nil
         // TODO: it might be worthwhile to handle the case when nresults==b explicitly?
-        StkId res = ci->func;
+        StkId res = current_ci->func;
         StkId vali = L->top - n;
         StkId valend = L->top;
 

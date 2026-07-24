@@ -63,7 +63,7 @@ static int __str_lower(lua_State* L)
     luaL_Strbuf b;
     char* ptr = luaL_buffinitsize(L, &b, l);
     for (size_t i = 0; i < l; i++)
-        *ptr++ = tolower(uchar(s[i]));
+        *ptr++ = (char)tolower(uchar(s[i]));
     luaL_pushresultsize(&b, l);
     return 1;
 }
@@ -75,7 +75,7 @@ static int __str_upper(lua_State* L)
     luaL_Strbuf b;
     char* ptr = luaL_buffinitsize(L, &b, l);
     for (size_t i = 0; i < l; i++)
-        *ptr++ = toupper(uchar(s[i]));
+        *ptr++ = (char)toupper(uchar(s[i]));
     luaL_pushresultsize(&b, l);
     return 1;
 }
@@ -552,9 +552,9 @@ init: // using goto's to optimize tail recursion
                     }
                     break;
                 }
-                case '+':             // 1 or more repetitions
-                    s++;              // 1 match already done
-                    LUAU_FALLTHROUGH; // go through
+                case '+': // 1 or more repetitions
+                    s++;  // 1 match already done
+                    /* fall through */
                 case '*':             // 0 or more repetitions
                     s = __max_expand(ms, s, p, ep);
                     break;
@@ -945,7 +945,7 @@ static const char* __scanformat(lua_State* L, const char* strfrmt, char* form, s
         luaL_error(L, "invalid format (width or precision too long)");
     *(form++) = '%';
     *size = p - strfrmt + 1;
-    strncpy(form, strfrmt, *size);
+    memcpy(form, strfrmt, *size);
     form += *size;
     *form = '\0';
     return p;
@@ -1380,7 +1380,7 @@ static void __packint(luaL_Strbuf* b, unsigned long long n, int islittle, int si
     if (neg && size > SZINT)
     {                                  // negative number need sign extension?
         for (i = SZINT; i < size; i++) // correct extra bytes
-            buff[islittle ? i : size - 1 - i] = (char)MC;
+            buff[islittle ? i : size - 1 - i] = (char)(unsigned char)MC;
     }
     luaL_addlstring(b, buff, size); // add result to buffer
 }
@@ -1491,7 +1491,7 @@ static int __str_pack(lua_State* L)
         }
         case Kpadding:
             luaL_addchar(&b, LUAL_PACKPADBYTE);
-            LUAU_FALLTHROUGH;
+            /* fall through */
         case Kpaddalign:
         case Knop:
             arg--; // undo increment

@@ -129,6 +129,7 @@ static int __coresumey(lua_State* L)
 
 static int __coresumecont(lua_State* L, int status)
 {
+    (void)status;
     lua_State* co = lua_tothread(L, 1);
     luaL_argexpected(L, co, 1, "thread");
 
@@ -170,6 +171,7 @@ static int __auxwrapy(lua_State* L)
 
 static int __auxwrapcont(lua_State* L, int status)
 {
+    (void)status;
     lua_State* co = lua_tothread(L, lua_upvalueindex(1));
 
     // if coroutine still hasn't yielded after the break, break current thread again

@@ -12,6 +12,13 @@ typedef struct luauc_allocator_t
     void* (*reallocate)(void* context, void* pointer, size_t old_size, size_t new_size);
 } luauc_allocator_t;
 
+typedef union luauc_max_align_t
+{
+    long double long_double_value;
+    void* pointer_value;
+    long long integer_value;
+} luauc_max_align_t;
+
 typedef struct luauc_vector_t
 {
     unsigned char* data;

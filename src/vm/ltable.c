@@ -703,22 +703,22 @@ const tvalue_t* luaH_get(lua_table_t* t, const tvalue_t* key)
         luai_num2int(k, n);
         if (luai_numeq(cast_num(k), nvalue(key))) // index is int?
             return luaH_getnum(t, k);             // use specialized version
-        LUAU_FALLTHROUGH;                         // else go through
+        break;
     }
     default:
-    {
-        lua_node_t* n = __mainposition(t, key);
-        for (;;)
-        { // check whether `key' is somewhere in the chain
-            if (luaO_rawequalKey(gkey(n), key))
-                return gval(n); // that's it
-            if (gnext(n) == 0)
-                break;
-            n += gnext(n);
-        }
-        return luaO_nilobject;
+        break;
     }
+
+    lua_node_t* n = __mainposition(t, key);
+    for (;;)
+    { // check whether `key' is somewhere in the chain
+        if (luaO_rawequalKey(gkey(n), key))
+            return gval(n); // that's it
+        if (gnext(n) == 0)
+            break;
+        n += gnext(n);
     }
+    return luaO_nilobject;
 }
 
 tvalue_t* luaH_set(lua_State* L, lua_table_t* t, const tvalue_t* key)
@@ -839,9 +839,9 @@ int luaH_getn(lua_table_t* t)
             base = ttisnil(&base[half]) ? base : base + half;
             rest -= half;
         }
-        int boundary = !ttisnil(base) + ((int)(base - t->array));
-        maybesetaboundary(t, boundary);
-        return boundary;
+        int array_boundary = !ttisnil(base) + ((int)(base - t->array));
+        maybesetaboundary(t, array_boundary);
+        return array_boundary;
     }
     else
     {

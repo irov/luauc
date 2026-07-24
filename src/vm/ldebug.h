@@ -14,17 +14,17 @@
 #define LUA_MEMERRMSG "not enough memory"
 #define LUA_ERRERRMSG "error in error handling"
 
-LUAI_FUNC l_noret luaG_typeerrorL(lua_State* L, const tvalue_t* o, const char* opname);
-LUAI_FUNC l_noret luaG_forerrorL(lua_State* L, const tvalue_t* o, const char* what);
-LUAI_FUNC l_noret luaG_concaterror(lua_State* L, StkId p1, StkId p2);
-LUAI_FUNC l_noret luaG_aritherror(lua_State* L, const tvalue_t* p1, const tvalue_t* p2, tag_method_t op);
-LUAI_FUNC l_noret luaG_ordererror(lua_State* L, const tvalue_t* p1, const tvalue_t* p2, tag_method_t op);
-LUAI_FUNC l_noret luaG_indexerror(lua_State* L, const tvalue_t* p1, const tvalue_t* p2);
-LUAI_FUNC l_noret luaG_methoderror(lua_State* L, const tvalue_t* p1, const tstring_t* p2);
-LUAI_FUNC l_noret luaG_missingmembererror(lua_State* L, const tvalue_t* p1, const tvalue_t* p2);
-LUAI_FUNC l_noret luaG_readonlyerror(lua_State* L);
+LUA_NORETURN LUAI_FUNC void luaG_typeerrorL(lua_State* L, const tvalue_t* o, const char* opname);
+LUA_NORETURN LUAI_FUNC void luaG_forerrorL(lua_State* L, const tvalue_t* o, const char* what);
+LUA_NORETURN LUAI_FUNC void luaG_concaterror(lua_State* L, StkId p1, StkId p2);
+LUA_NORETURN LUAI_FUNC void luaG_aritherror(lua_State* L, const tvalue_t* p1, const tvalue_t* p2, tag_method_t op);
+LUA_NORETURN LUAI_FUNC void luaG_ordererror(lua_State* L, const tvalue_t* p1, const tvalue_t* p2, tag_method_t op);
+LUA_NORETURN LUAI_FUNC void luaG_indexerror(lua_State* L, const tvalue_t* p1, const tvalue_t* p2);
+LUA_NORETURN LUAI_FUNC void luaG_methoderror(lua_State* L, const tvalue_t* p1, const tstring_t* p2);
+LUA_NORETURN LUAI_FUNC void luaG_missingmembererror(lua_State* L, const tvalue_t* p1, const tvalue_t* p2);
+LUA_NORETURN LUAI_FUNC void luaG_readonlyerror(lua_State* L);
 
-LUAI_FUNC LUA_PRINTF_ATTR(2, 3) l_noret luaG_runerrorL(lua_State* L, const char* fmt, ...);
+LUA_NORETURN LUAI_FUNC LUA_PRINTF_ATTR(2, 3) void luaG_runerrorL(lua_State* L, const char* fmt, ...);
 LUAI_FUNC void luaG_pusherror(lua_State* L, const char* error);
 
 LUAI_FUNC void luaG_breakpoint(lua_State* L, proto_t* p, int line, bool enable);

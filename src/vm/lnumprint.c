@@ -222,7 +222,7 @@ static char* __printunsignedrev(char* end, uint64_t num)
 
     if (rest)
     {
-        end[-1] = '0' + ((int)(rest));
+        end[-1] = (char)('0' + (int)rest);
         end -= 1;
     }
 
@@ -238,7 +238,7 @@ static char* __printexp(char* buf, int num)
 
     if (v >= 100)
     {
-        *buf++ = '0' + (v / 100);
+        *buf++ = (char)('0' + (v / 100));
         v %= 100;
     }
 

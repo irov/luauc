@@ -37,7 +37,7 @@ static void __lua_pcall_yieldable_run(lua_State* L, void* userdata)
 static const char* __currfuncname(lua_State* L)
 {
     closure_t* cl = L->ci > L->base_ci ? curr_func(L) : NULL;
-    const char* debugname = cl && cl->isC ? cl->c.debugname + 0 : NULL;
+    const char* debugname = cl && cl->isC ? cl->c.debugname : NULL;
 
     if (debugname && strcmp(debugname, "__namecall") == 0)
         return L->namecall ? getstr(L->namecall) : NULL;
@@ -45,7 +45,7 @@ static const char* __currfuncname(lua_State* L)
         return debugname;
 }
 
-l_noret luaL_argerrorL(lua_State* L, int narg, const char* extramsg)
+LUA_NORETURN void luaL_argerrorL(lua_State* L, int narg, const char* extramsg)
 {
     const char* fname = __currfuncname(L);
 
@@ -55,7 +55,7 @@ l_noret luaL_argerrorL(lua_State* L, int narg, const char* extramsg)
         luaL_error(L, "invalid argument #%d (%s)", narg, extramsg);
 }
 
-l_noret luaL_typeerrorL(lua_State* L, int narg, const char* tname)
+LUA_NORETURN void luaL_typeerrorL(lua_State* L, int narg, const char* tname)
 {
     const char* fname = __currfuncname(L);
     const tvalue_t* obj = luaA_toobject(L, narg);
@@ -76,7 +76,7 @@ l_noret luaL_typeerrorL(lua_State* L, int narg, const char* tname)
     }
 }
 
-static l_noret __tag_error(lua_State* L, int narg, int tag)
+LUA_NORETURN static void __tag_error(lua_State* L, int narg, int tag)
 {
     luaL_typeerrorL(L, narg, lua_typename(L, tag));
 }
@@ -96,7 +96,7 @@ void luaL_where(lua_State* L, int level)
 }
 
 // Can be called without stack space reservation
-l_noret luaL_errorL(lua_State* L, const char* fmt, ...)
+LUA_NORETURN void luaL_errorL(lua_State* L, const char* fmt, ...)
 {
     va_list argp;
     va_start(argp, fmt);

@@ -455,6 +455,8 @@ void luauc_bytecode_undo_emit(luauc_bytecode_builder_t* builder, luauc_opcode_t 
         return;
     last = (uint32_t*)luauc_vector_at(&builder->instructions, builder->instructions.size - 1);
     assert((*last & 0xffu) == (uint32_t)op);
+    (void)last;
+    (void)op;
     builder->instructions.size--;
     builder->lines.size--;
 }
@@ -500,6 +502,7 @@ int luauc_bytecode_patch_skip_c(luauc_bytecode_builder_t* builder, size_t jump_l
     instruction = (uint32_t*)luauc_vector_at(&builder->instructions, jump_label);
     op = (luauc_opcode_t)LUAU_INSN_OP(*instruction);
     assert(__luauc_is_skip_c(op) || __luauc_is_fast_call(op));
+    (void)op;
     assert(LUAU_INSN_C(*instruction) == 0);
     offset = target_label - jump_label - 1;
     if (offset > UINT8_MAX)
@@ -1331,6 +1334,7 @@ int luauc_bytecode_expand_jumps(luauc_bytecode_builder_t* builder)
         }
     }
     assert(pending == 0);
+    (void)pending;
 
     for (index = 0; index < builder->debug_locals.size; ++index)
     {
